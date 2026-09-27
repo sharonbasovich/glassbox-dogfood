@@ -122,17 +122,19 @@ ${q.map((x) => h`<tr><td><a href="/projects/${x.project_id}">${x.title}</a><div 
     const rub = criteria(ctx.db, e.id);
     const wsum = rub.reduce((s, c) => s + c.weight, 0) || 1;
     const next = q.find((x) => !x.score_id && x.project_id !== item.project_id);
+    const locked = phase(e, ctx.clock.now()) === 'published';
     return view(req, ctx, { title: `Score ${item.title}`, crumbs: [[`/e/${e.slug}`, e.name], [`/e/${e.slug}/judge`, 'Queue']] }, h`<h1>${item.title}</h1>
 <p class="muted">${item.team_name}${item.track_name ? ` · ${item.track_name}` : ''} · <a href="/projects/${item.project_id}" target="_blank">Full project page</a>${item.repo_url ? h` · <a href="${item.repo_url}" rel="noopener nofollow" target="_blank">Repo</a>` : ''}${item.demo_url ? h` · <a href="${item.demo_url}" rel="noopener nofollow" target="_blank">Demo</a>` : ''}</p>
 <p>${item.summary}</p>
-<form class="stack card" method="post" action="/e/${e.slug}/judge/${item.project_id}">${csrfField(ctx.actor)}
+${locked ? h`<div class="flash">Results are published; scores are locked and shown read-only.</div>` : ''}
+<form class="stack card" method="post" action="/e/${e.slug}/judge/${item.project_id}">${csrfField(ctx.actor)}<fieldset ${locked ? 'disabled' : ''} style="border:0;padding:0;margin:0;display:grid;gap:12px">
 ${rub.map((c) => h`<fieldset style="border:0;padding:0;margin:0"><legend><b>${c.name}</b> <span class="muted small">weight ${Math.round((100 * c.weight) / wsum)}% · ${c.description}</span></legend>
 <div class="scale">${Array.from({ length: c.scale_max - c.scale_min + 1 }, (_, i) => c.scale_min + i).map((n) => h`<label><input type="radio" name="${c.key}" value="${n}" required ${mine?.values[c.key] === n ? 'checked' : ''}> ${n}</label>`)}</div></fieldset>`)}
 <label>Comment for the team <span class="hint">Shared anonymously with the team after results are published.</span><textarea name="comment" maxlength="4000">${mine?.comment ?? ''}</textarea></label>
 <input type="hidden" name="next" value="${next ? next.project_id : ''}">
-<div class="row" style="flex:0"><button>${mine ? 'Update score' : 'Save score'}${next ? ' and next' : ''}</button></div></form>
-<details class="card"><summary>Conflict of interest?</summary><form method="post" action="/e/${e.slug}/judge/${item.project_id}/recuse" class="stack" style="margin-top:10px">${csrfField(ctx.actor)}
-<label>Reason<input name="reason" required maxlength="300" placeholder="e.g. I mentor this team"></label><button class="danger">Recuse from this project</button></form></details>`);
+${locked ? '' : h`<div class="row" style="flex:0"><button>${mine ? 'Update score' : 'Save score'}${next ? ' and next' : ''}</button></div>`}</fieldset></form>
+${locked ? '' : h`<details class="card"><summary>Conflict of interest?</summary><form method="post" action="/e/${e.slug}/judge/${item.project_id}/recuse" class="stack" style="margin-top:10px">${csrfField(ctx.actor)}
+<label>Reason<input name="reason" required maxlength="300" placeholder="e.g. I mentor this team"></label><button class="danger">Recuse from this project</button></form></details>`}`);
   });
 
   r.on('POST', '/e/:event/judge/:project', async (req, ctx) => {

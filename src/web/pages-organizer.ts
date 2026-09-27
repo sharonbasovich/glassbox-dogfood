@@ -28,7 +28,7 @@ function load(req: Req, ctx: Ctx): EventRow {
   return e;
 }
 
-const eventForm = (ctx: Ctx, e: Partial<EventRow> | null, action: string) => h`<form class="stack card" method="post" action="${action}">${csrfField(ctx.actor)}
+const eventForm = (ctx: Ctx, e: Partial<EventRow> | null, action: string, isNew = false) => h`<form class="stack card" method="post" action="${action}">${csrfField(ctx.actor)}
 <label>Name<input name="name" required maxlength="120" value="${e?.name ?? ''}"></label>
 <label>Tagline<input name="tagline" maxlength="200" value="${e?.tagline ?? ''}"></label>
 <label>Description<textarea name="description" maxlength="10000">${e?.description ?? ''}</textarea></label>
@@ -39,9 +39,9 @@ const eventForm = (ctx: Ctx, e: Partial<EventRow> | null, action: string) => h`<
 <label>Reviews per project<input type="number" name="reviews_per_project" min="1" max="20" value="${e?.reviews_per_project ?? 3}"></label>
 <label>Calibration<select name="normalization"><option value="zscore_shrunk">Shrunk z-score (recommended)</option><option value="none" ${e?.normalization === 'none' ? 'selected' : ''}>None (raw weighted mean)</option></select></label>
 <label>Visibility<select name="visibility"><option value="public">Public</option><option value="draft" ${e?.visibility === 'draft' ? 'selected' : ''}>Draft (organizers only)</option></select></label></div>
-${e ? '' : h`<label>Tracks <span class="hint">one per line</span><textarea name="tracks" rows="3" placeholder="Open\nBest use of AI"></textarea></label>
+${!isNew ? '' : h`<label>Tracks <span class="hint">one per line</span><textarea name="tracks" rows="3" placeholder="Open\nBest use of AI"></textarea></label>
 <label>Prizes <span class="hint">one per line</span><textarea name="prizes" rows="3" placeholder="Grand prize\nPeople's choice"></textarea></label>`}
-<button>${e ? 'Save settings' : 'Create event'}</button></form>`;
+<button>${isNew ? 'Create event' : 'Save settings'}</button></form>`;
 
 export function organizerRoutes(r: Router<Ctx>): void {
   r.on('GET', '/events/new', (req, ctx) => {
@@ -49,7 +49,7 @@ export function organizerRoutes(r: Router<Ctx>): void {
     if (!canCreateEvents(ctx.actor)) throw forbidden('Your account cannot create events. Ask an admin to make you an organizer.', 'cannot_create_events');
     const now = new Date(Math.ceil(ctx.clock.now().getTime() / 3600_000) * 3600_000);
     const draft = { submissions_open_at: now.toISOString(), submissions_close_at: new Date(now.getTime() + 48 * 3600_000).toISOString(), judging_close_at: new Date(now.getTime() + 72 * 3600_000).toISOString() };
-    return view(req, ctx, { title: 'New event' }, h`<h1>Create an event</h1><p class="muted">You can change everything later. A default rubric (Functionality 40%, Quality 35%, Innovation 25%) is created; edit it under Setup.</p>${eventForm(ctx, { ...draft } as Partial<EventRow>, '/events')}
+    return view(req, ctx, { title: 'New event' }, h`<h1>Create an event</h1><p class="muted">You can change everything later. A default rubric (Functionality 40%, Quality 35%, Innovation 25%) is created; edit it under Setup.</p>${eventForm(ctx, { ...draft } as Partial<EventRow>, '/events', true)}
 <h2>Or import</h2><form class="stack card" method="post" action="/events/import" enctype="application/x-www-form-urlencoded">${csrfField(ctx.actor)}<label>DOGFOOD fixtures.json or Glassbox bundle <span class="hint">Paste the JSON. Ids are kept when free; duplicates and conflicts are reported.</span><textarea name="bundle" rows="6" required></textarea></label><button class="secondary">Import</button></form>`);
   });
   r.on('POST', '/events', async (req, ctx) => {
