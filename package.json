@@ -1,0 +1,22 @@
+{
+  "name": "glassbox",
+  "version": "0.1.0",
+  "description": "Self-hostable hackathon submission and judging portal with explainable judge calibration.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "start": "node src/server.ts",
+    "dev": "GLASSBOX_DB=./data/dev.db node --watch src/server.ts",
+    "seed": "node src/cli.ts seed",
+    "test": "node --test tests/",
+    "typecheck": "tsc -p tsconfig.json",
+    "check": "npm run typecheck && npm test",
+    "acceptance": "python3 tools/run.py .dogfood.toml --fixtures data/fixtures.json"
+  },
+  "devDependencies": {
+    "@types/node": "24.3.0",
+    "typescript": "5.9.2"
+  }
+}
