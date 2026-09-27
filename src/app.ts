@@ -94,7 +94,14 @@ export function createApp(opts: AppOptions): (req: IncomingMessage, res: ServerR
           return send(res, redirect(`${clean}${clean.includes('?') ? '&' : '?'}err=${encodeURIComponent(e.message)}`));
         }
         if (e.status === 401 && method === 'GET') return send(res, redirect(`/login?next=${encodeURIComponent(url.pathname + url.search)}`));
-        const actor = (() => { try { return resolveActor(opts.db, opts.clock, {}, {}); } catch { return { user: null, via: 'anonymous' as const, csrf: null }; } })();
+        const actor = (() => {
+          try {
+            const cookies = Object.fromEntries((raw.headers.cookie ?? '').split(';').map((c) => c.trim().split('=')).filter((kv) => kv.length === 2).map(([k, v]) => [k!, decodeURIComponent(v!)]));
+            return resolveActor(opts.db, opts.clock, { authorization: raw.headers.authorization }, cookies);
+          } catch {
+            return { user: null, via: 'anonymous' as const, csrf: null };
+          }
+        })();
         return send(res, htmlReply(e.status, page({ actor, title: e.status === 404 ? 'Not found' : 'Error' }, h`<div class="empty"><h1>${e.status === 404 ? 'Not found' : e.status === 403 ? 'Not allowed' : 'Error'}</h1><p>${e.message}</p><p><a href="/">Home</a></p></div>`)));
       });
   };
