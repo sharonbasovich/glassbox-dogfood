@@ -7,6 +7,7 @@ Glassbox runs as a single container with no external services: no hosted databas
 - **Claimed tiers:** T1 + T2. The official checker verified both; see [`acceptance-report.txt`](acceptance-report.txt).
 - **Stack:** Node 24 + TypeScript (run directly, no build step), built-in `node:sqlite`, server-rendered HTML. The runtime has zero npm dependencies.
 - **License:** MIT.
+- **Demo video (5:00):** [watch in the browser](https://cdn.jsdelivr.net/gh/sharonbasovich/glassbox-dogfood@main/docs/demo.mp4) · [docs/demo.mp4](docs/demo.mp4)
 
 ## Quick start (Docker, offline)
 
@@ -89,6 +90,20 @@ python3 tools/run.py .dogfood.toml --fixtures data/fixtures.json > acceptance-re
 - Browse the audit log with chain verification.
 
 **Admins.** Admins manage platform roles and verify audit-chain integrity for the whole instance.
+
+## Honest limitations
+
+- **Tiers:** only T1 and T2 are built. There is no T3 or T4: no community voting, comments or random ballot order. (Results do stay hidden until an organizer publishes them.)
+- **Track scoping works through assignment.** A judge can open and score only the projects assigned to them, and the API enforces this. Auto-assign prefers judges whose tracks match. If no eligible on-track judge is left, it assigns someone off-track and reports how many (`N outside the judge's tracks`) in the UI and the audit log. It does not refuse. Organizers can unassign these by hand.
+- **No email delivery.** Glassbox runs offline, so judge invites and team invites are one-time links the organizer or team copies and sends themselves. There is no password-reset flow either.
+- **No login rate limiting** beyond the cost of scrypt. Put a reverse-proxy limit on `/login` for internet-facing use (see THREAT-MODEL.md).
+- **Single node.** It runs on one SQLite file (WAL mode), which is fine for one event on a laptop or a small VM. It does not scale horizontally.
+- **Calibration** works on the weighted total, not on each criterion. It assumes judges saw a comparable mix of projects, and with fewer than about 3 reviews per judge it stays close to raw. See JUDGING.md §7.
+- **Demo video:** captions only, no voiceover. It shows the browser flow; the checker run is documented above rather than filmed.
+
+## Provenance
+
+GitHub created the repository's first commit (`e9e0d59`, 2026-09-25) with only a two-line README and the MIT LICENSE. Every line of project code was committed after kickoff (Sat 26 Sep 18:00 UTC), starting with `3b42829` on 2026-09-27 07:05 UTC. `git log --format='%h %aI %s'` shows this.
 
 ## Docs
 
