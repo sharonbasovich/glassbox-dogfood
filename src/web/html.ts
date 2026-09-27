@@ -62,13 +62,13 @@ export function page(opts: PageOpts, body: Html): string {
   const flash = h`${opts.flash?.ok ? h`<div class="flash ok" role="status">${opts.flash.ok}</div>` : ''}${opts.flash?.err ? h`<div class="flash err" role="alert">${opts.flash.err}</div>` : ''}`;
   return `<!doctype html>` + h`<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${opts.title} · Glassbox</title><link rel="stylesheet" href="/static/app.css"><link rel="icon" href="/static/favicon.svg"></head>
-<body><header class="top"><div class="wrap bar">
+<body><header class="top"><div class="wrap${opts.wide ? ' wide' : ''} bar">
 <a class="brand" href="/"><img src="/static/favicon.svg" alt="" width="22" height="22"> Glassbox</a>
 <nav><a href="/projects">Gallery</a><a href="/">Events</a>${u && (u.platform_role === 'organizer' || u.platform_role === 'admin') ? h`<a href="/events/new">New event</a>` : ''}${u?.platform_role === 'admin' ? h`<a href="/admin">Admin</a>` : ''}</nav>
 <div class="who">${u ? h`<span title="${u.email}">${u.name}</span><form method="post" action="/logout">${csrfField(opts.actor)}<button class="link">Sign out</button></form>` : h`<a href="/login">Sign in</a><a class="btn small" href="/signup">Create account</a>`}</div>
 </div></header>
 <main class="wrap${opts.wide ? ' wide' : ''}">${opts.crumbs?.length ? h`<nav class="crumbs">${opts.crumbs.map(([href, label], i) => h`${i ? ' / ' : ''}<a href="${href}">${label}</a>`)}</nav>` : ''}${flash}${body}</main>
-<footer class="wrap foot">Glassbox — open-source, self-hosted hackathon judging. Every score change is in the audit log.</footer>
+<footer class="wrap${opts.wide ? ' wide' : ''} foot">Glassbox — open-source, self-hosted hackathon judging. Every score change is in the audit log.</footer>
 </body></html>`.value;
 }
 

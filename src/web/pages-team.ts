@@ -128,7 +128,7 @@ ${q.map((x) => h`<tr><td><a href="/projects/${x.project_id}">${x.title}</a><div 
 <p>${item.summary}</p>
 ${locked ? h`<div class="flash">Results are published; scores are locked and shown read-only.</div>` : ''}
 <form class="stack card" method="post" action="/e/${e.slug}/judge/${item.project_id}">${csrfField(ctx.actor)}<fieldset ${locked ? 'disabled' : ''} style="border:0;padding:0;margin:0;display:grid;gap:12px">
-${rub.map((c) => h`<fieldset style="border:0;padding:0;margin:0"><legend><b>${c.name}</b> <span class="muted small">weight ${Math.round((100 * c.weight) / wsum)}% · ${c.description}</span></legend>
+${rub.map((c) => h`<fieldset style="border:0;padding:0;margin:0"><legend><b>${c.name}</b> <span class="muted small">weight ${Math.round((100 * c.weight) / wsum)}%${c.description ? ` · ${c.description}` : ''}</span></legend>
 <div class="scale">${Array.from({ length: c.scale_max - c.scale_min + 1 }, (_, i) => c.scale_min + i).map((n) => h`<label><input type="radio" name="${c.key}" value="${n}" required ${mine?.values[c.key] === n ? 'checked' : ''}> ${n}</label>`)}</div></fieldset>`)}
 <label>Comment for the team <span class="hint">Shared anonymously with the team after results are published.</span><textarea name="comment" maxlength="4000">${mine?.comment ?? ''}</textarea></label>
 <input type="hidden" name="next" value="${next ? next.project_id : ''}">

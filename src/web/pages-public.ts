@@ -14,7 +14,7 @@ function cookie(ctx: Ctx, token: string, maxAge: number): string {
   return `${SESSION_COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${ctx.secureCookies ? '; Secure' : ''}`;
 }
 
-const safeNext = (n: unknown) => (typeof n === 'string' && /^\/(?!\/)/.test(n) ? n : '/');
+const safeNext = (n: unknown) => (typeof n === 'string' && /^\/(?![/\\])[^\\\x00-\x1f\x7f]*$/.test(n) ? n : '/');
 
 export function projectCard(p: GalleryItem, showEvent = true): Html {
   return h`<article class="card"><h3><a href="/projects/${p.id}">${p.title}</a></h3>
