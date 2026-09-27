@@ -97,6 +97,7 @@ python3 tools/run.py .dogfood.toml --fixtures data/fixtures.json > acceptance-re
 - [JUDGING.md](JUDGING.md): scoring, calibration maths, a worked example, the limits.
 - [THREAT-MODEL.md](THREAT-MODEL.md): roles, attacks considered, mitigations.
 - [docs/DEMO.md](docs/DEMO.md): the 5-minute create → submit → judge → publish walkthrough.
+- [docs/demo.mp4](docs/demo.mp4): 5-minute recorded browser demo of the same flow (create event → team submits → judge scores → calibrated results → publish → public results and audit).
 
 ## CLI
 

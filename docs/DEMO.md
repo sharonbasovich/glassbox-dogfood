@@ -1,5 +1,7 @@
 # 5-minute demo: create → submit → judge → publish
 
+Recorded version: [demo.mp4](demo.mp4) (5:00, browser only).
+
 Setup (before recording): run `docker compose up`, open http://localhost:8080, and keep two browser windows side by side (or one normal and one private). All passwords are `glassbox-demo`.
 
 | Time | Window | Action | What to say |
