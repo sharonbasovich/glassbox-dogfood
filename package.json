@@ -7,10 +7,10 @@
   "type": "module",
   "engines": { "node": ">=24" },
   "scripts": {
-    "start": "node src/server.ts",
+    "start": "node --disable-warning=ExperimentalWarning src/server.ts",
     "dev": "GLASSBOX_DB=./data/dev.db node --watch src/server.ts",
-    "seed": "node src/cli.ts seed",
-    "test": "node --test tests/",
+    "seed": "node --disable-warning=ExperimentalWarning src/cli.ts seed",
+    "test": "node --disable-warning=ExperimentalWarning --test tests/*.test.ts",
     "typecheck": "tsc -p tsconfig.json",
     "check": "npm run typecheck && npm test",
     "acceptance": "python3 tools/run.py .dogfood.toml --fixtures data/fixtures.json"

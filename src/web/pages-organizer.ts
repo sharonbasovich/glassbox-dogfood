@@ -167,7 +167,7 @@ ${rows.map((c, i) => h`<tr><td><input name="name_${i}" value="${c?.name ?? ''}" 
     const trackName = new Map(trk.map((t) => [t.id, t.name]));
     const projects = eventProjects(ctx.db, e.id, false).filter((p) => !p.duplicate_of);
     const asg = all<{ judge_id: string; project_id: string; scored: number }>(ctx.db, 'SELECT a.judge_id, a.project_id, (s.id IS NOT NULL) scored FROM assignments a LEFT JOIN scores s ON s.judge_id = a.judge_id AND s.project_id = a.project_id WHERE a.event_id = ?', e.id);
-    const conflicts = all<{ judge_id: string; project_id: string; reason: string }>(ctx.db, 'SELECT judge_id, project_id, reason FROM conflicts WHERE event_id = ?', e.id);
+    const conflicts = all<{ judge_id: string; team_name: string; reason: string }>(ctx.db, 'SELECT c.judge_id, t.name team_name, c.reason FROM conflicts c JOIN teams t ON t.id = c.team_id WHERE c.event_id = ?', e.id);
     const link = req.query.get('claim');
     return shell(req, ctx, e, 'judges', h`${link ? h`<div class="flash ok">Send this one-time setup link to the judge: <code class="pill mono">${link}</code> (prefix with this server's address).</div>` : ''}
 <div class="cols"><div><h2>Judges (${js.length})</h2>${js.length ? h`<div class="table-wrap"><table><thead><tr><th>Judge</th><th>Tracks</th><th class="right">Assigned</th><th class="right">Scored</th><th></th></tr></thead><tbody>
@@ -181,7 +181,7 @@ ${projects.map((p) => { const list = asg.filter((a) => a.project_id === p.id); r
 <td class="small">${list.length < e.reviews_per_project ? h`<span class="badge flag">${list.length}/${e.reviews_per_project}</span> ` : ''}${list.map((a) => h`<span class="badge ${a.scored ? 'ok' : ''}">${js.find((j) => j.id === a.judge_id)?.name ?? a.judge_id}${a.scored ? '' : h` <form class="inline" method="post" action="/e/${e.slug}/manage/unassign">${csrfField(ctx.actor)}<input type="hidden" name="judge_id" value="${a.judge_id}"><input type="hidden" name="project_id" value="${p.id}"><button class="link small" title="Unassign">×</button></form>`}</span> `)}</td>
 <td><form class="row" method="post" action="/e/${e.slug}/manage/assign" style="flex-wrap:nowrap">${csrfField(ctx.actor)}<input type="hidden" name="project_id" value="${p.id}"><select name="judge_id" aria-label="Judge">${js.filter((j) => !list.some((a) => a.judge_id === j.id)).map((j) => h`<option value="${j.id}">${j.name}</option>`)}</select><button class="small shrink">+</button></form></td></tr>`; })}
 </tbody></table></div>
-${conflicts.length ? h`<h2>Declared conflicts</h2><ul>${conflicts.map((c) => h`<li>${js.find((j) => j.id === c.judge_id)?.name ?? c.judge_id} — ${projects.find((p) => p.id === c.project_id)?.title ?? c.project_id}: <span class="muted">${c.reason}</span></li>`)}</ul>` : ''}
+${conflicts.length ? h`<h2>Declared conflicts</h2><ul>${conflicts.map((c) => h`<li>${js.find((j) => j.id === c.judge_id)?.name ?? c.judge_id} — ${c.team_name}: <span class="muted">${c.reason}</span></li>`)}</ul>` : ''}
 </div><aside><h2>Invite a judge</h2><form class="stack card" method="post" action="/e/${e.slug}/manage/judges">${csrfField(ctx.actor)}
 <label>Email<input type="email" name="email" required></label><label>Name<input name="name" maxlength="120"></label>
 ${trk.length ? h`<fieldset style="border:0;padding:0"><legend class="small"><b>Tracks</b> <span class="muted">(none = any)</span></legend>${trk.map((t) => h`<label style="display:flex;gap:6px;font-weight:400"><input type="checkbox" name="tracks" value="${t.id}" style="width:auto"> ${t.name}</label>`)}</fieldset>` : ''}

@@ -1,0 +1,19 @@
+services:
+  glassbox:
+    build: .
+    image: glassbox:local
+    ports:
+      - "8080:8080"
+    environment:
+      # Seeds the DOGFOOD fixture event plus two demo events on first start.
+      GLASSBOX_SEED: "auto"
+      # Fixed API tokens used by .dogfood.toml. Set to "off" for a real event.
+      GLASSBOX_DEMO_TOKENS: "on"
+      # GLASSBOX_ADMIN_PASSWORD: "change-me"
+      # GLASSBOX_SECURE_COOKIES: "1"   # when served over HTTPS
+    volumes:
+      - glassbox-data:/data
+    restart: unless-stopped
+
+volumes:
+  glassbox-data:
