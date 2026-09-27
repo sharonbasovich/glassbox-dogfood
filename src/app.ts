@@ -1,6 +1,7 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { readFileSync, existsSync, statSync } from 'node:fs';
 import { join, normalize, extname, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Router, buildReq, htmlReply, json, redirect, type Reply } from './http/router.ts';
 import type { Db } from './db/index.ts';
 import { HttpError, type Clock } from './util.ts';
@@ -12,7 +13,7 @@ import { teamRoutes } from './web/pages-team.ts';
 import { organizerRoutes } from './web/pages-organizer.ts';
 import { page, h } from './web/html.ts';
 
-const PUBLIC_DIR = join(dirname(new URL(import.meta.url).pathname), '..', 'public');
+const PUBLIC_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'public');
 const TYPES: Record<string, string> = { '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.js': 'text/javascript; charset=utf-8', '.png': 'image/png', '.txt': 'text/plain; charset=utf-8' };
 
 const SECURITY_HEADERS: Record<string, string> = {

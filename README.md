@@ -2,12 +2,15 @@
 
 Open-source, self-hosted hackathon submission and judging portal, built for DOGFOOD 2026.
 
+### [▶ Play the 5-minute demo](https://cdn.jsdelivr.net/gh/sharonbasovich/glassbox-dogfood@main/docs/demo.mp4)
+
+The 5:00 captioned browser recording plays directly in your browser. It walks through create event → team submits → judge scores → calibrated results → publish → public results and audit. Also in the repo as [docs/demo.mp4](docs/demo.mp4).
+
 Glassbox runs as a single container with no external services: no hosted database, no hosted auth and no network calls at runtime. It gives you a public project gallery (T1) and judging you can defend (T2). Judges score against a weighted rubric. Calibration removes lenient/harsh judge bias, and the method is explained in the UI. The raw and adjusted rankings are shown side by side, and an append-only, hash-chained audit trail records every change.
 
 - **Claimed tiers:** T1 + T2. The official checker verified both; see [`acceptance-report.txt`](acceptance-report.txt).
 - **Stack:** Node 24 + TypeScript (run directly, no build step), built-in `node:sqlite`, server-rendered HTML. The runtime has zero npm dependencies.
 - **License:** MIT.
-- **Demo video (5:00):** [watch in the browser](https://cdn.jsdelivr.net/gh/sharonbasovich/glassbox-dogfood@main/docs/demo.mp4) · [docs/demo.mp4](docs/demo.mp4)
 
 ## Quick start (Docker, offline)
 

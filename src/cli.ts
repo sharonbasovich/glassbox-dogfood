@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { openDb, get } from './db/index.ts';
 import { systemClock } from './util.ts';
 import { seed } from './seed.ts';
@@ -7,7 +8,7 @@ import { importBundle, exportEvent } from './services/importer.ts';
 import { verifyAuditChain } from './services/audit.ts';
 import { getUser, type Actor } from './services/auth.ts';
 
-const root = join(dirname(new URL(import.meta.url).pathname), '..');
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const db = openDb(process.env.GLASSBOX_DB ?? join(root, 'data', 'glassbox.db'));
 const [cmd, ...args] = process.argv.slice(2);
 

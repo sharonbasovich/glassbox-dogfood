@@ -1,12 +1,13 @@
 import { createServer, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { openDb, type Db } from '../src/db/index.ts';
 import { createApp } from '../src/app.ts';
 import { seed } from '../src/seed.ts';
 import type { Clock } from '../src/util.ts';
 
-export const FIXTURES = join(dirname(new URL(import.meta.url).pathname), '..', 'data', 'fixtures.json');
+export const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), '..', 'data', 'fixtures.json');
 
 export class FakeClock implements Clock {
   t: number;

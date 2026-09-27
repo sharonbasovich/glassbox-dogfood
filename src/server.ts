@@ -1,11 +1,12 @@
 import { createServer } from 'node:http';
 import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { openDb } from './db/index.ts';
 import { systemClock } from './util.ts';
 import { createApp } from './app.ts';
 import { seed } from './seed.ts';
 
-const root = join(dirname(new URL(import.meta.url).pathname), '..');
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dbPath = process.env.GLASSBOX_DB ?? join(root, 'data', 'glassbox.db');
 const port = Number(process.env.PORT ?? 8080);
 const host = process.env.HOST ?? '0.0.0.0';
