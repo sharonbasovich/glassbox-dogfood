@@ -9,6 +9,7 @@ base_url = "http://localhost:8080"
 
 [tiers]
 claimed = ["T1", "T2"]
+pitch = "Glassbox: a zero-dependency, self-hosted hackathon portal with a public gallery, API-enforced judge isolation, and shrunk z-score calibration showing raw vs adjusted rankings over a hash-chained audit trail."
 
 [auth]
 participant = "Authorization: Bearer gbx_demo_participant_2e88f16b"
