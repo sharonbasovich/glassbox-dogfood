@@ -1,0 +1,24 @@
+# DOGFOOD 2026 acceptance checker config for Glassbox.
+# Start the portal (docker compose up, or npm start), then:
+#   python3 tools/run.py .dogfood.toml --fixtures data/fixtures.json > acceptance-report.txt
+# The tokens below are seeded demo API sessions (see src/seed.ts). Disable them
+# in production with GLASSBOX_DEMO_TOKENS=off.
+
+[portal]
+base_url = "http://localhost:8080"
+
+[tiers]
+claimed = ["T1", "T2"]
+
+[auth]
+participant = "Authorization: Bearer gbx_demo_participant_2e88f16b"
+judge_a = "Authorization: Bearer gbx_demo_judge_a_91bc3e07"
+judge_b = "Authorization: Bearer gbx_demo_judge_b_44de7a5d"
+organizer = "Authorization: Bearer gbx_demo_organizer_7f2a9c41"
+
+[routes]
+gallery = "/projects"
+submit = "/api/events/evt_01/projects"
+judge_scores = "/api/judges/me/scores"
+peer_scores = "/api/judges/jdg_01/scores"
+csv_export = "/api/events/evt_01/export/scores.csv"
